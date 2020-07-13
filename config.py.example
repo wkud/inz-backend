@@ -1,0 +1,16 @@
+class Config(object):
+    DEBUG = False
+    TESTING = False
+    SQLALCHEMY_DATABASE_URI = 'database_uri'
+
+
+class ProductionConfig(Config):
+    SQLALCHEMY_DATABASE_URI = 'postgres://user:password@hostname:port/database-name'
+
+
+class DevelopmentConfig(Config):
+    DEBUG = True
+
+
+class TestingConfig(Config):
+    TESTING = True

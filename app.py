@@ -1,42 +1,50 @@
 from flask import Flask, request
 from flask_restful import Resource, Api
+from flask_sqlalchemy import SQLAlchemy
+from config import ProductionConfig
 
-app = Flask("inz")
+# config
+app = Flask('inz')
+app.config.from_object(ProductionConfig())
+
 api = Api(app)
-
-collection = []
-array = {}
+db = SQLAlchemy(app)
 
 
-class Endpoint(Resource):
-    # http://127.0.0.1:5000/
-    def get(self):
-        return {"about": "Hello World!"}
-        # response: {"about": "Hello World!"}
+# database
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(20), unique=True, nullable=False)
+    password = db.Column(db.String(60), nullable=False)
 
-    # http://127.0.0.1:5000?index=4&value=10
+    def __repr__(self):
+        return f"User({self.id}, '{self.email}')"
+
+
+# test endpoints
+class CreateUser(Resource):
+    # http://127.0.0.1:5000/users + data in json body
+    # user data is: email and password (not id)
     def post(self):
-        args = request.args
-        index = int(args['index'])
-        value = int(args['value'])
-        array[index] = value
-        return array
-        # response: { "4": 10 }
+        user_data = request.get_json()
+        email = user_data.get('email')
+        password = user_data.get('password')
+        new_user = User(email=email, password=password)
+        db.session.add(new_user)
+        db.session.commit()
+        return {'id': new_user.id}
 
 
-class UrlEndpoint(Resource):
-    # http://127.0.0.1:5000/some_name
-    def post(self, name):
-        if request.method == 'POST':
-            data = request.get_json()
-        collection.append({name: data})
-        return collection
-        # response: { "some_name": 10 }
+class GetUser(Resource):
+    # http://127.0.0.1:5000/users/id
+    def get(self, id):
+        user = User.query.filter_by(id=id).first()
+        return {'id': user.id, 'email': user.email}
 
 
-api.add_resource(Endpoint, "/")
-api.add_resource(UrlEndpoint, "/<string:name>")
+api.add_resource(CreateUser, '/users')
+api.add_resource(GetUser, '/users/<int:id>')
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     app.run(debug=True)
