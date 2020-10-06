@@ -4,3 +4,4 @@ flask-sqlalchemy
 psycopg2
 flask-bcrypt
 flask-api
+flask-jwt

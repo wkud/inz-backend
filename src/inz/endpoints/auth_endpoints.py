@@ -3,6 +3,7 @@ from flask_restful import Resource
 from inz import api
 from inz.services.user_service import UserService
 from flask_api import status
+from flask_jwt import jwt_required, current_identity
 
 
 class RegisterEndpoint(Resource):
@@ -24,7 +25,7 @@ class LoginEndpoint(Resource):
         password = user_data.get('password')
         valid = UserService.validate_credentials(email, password)
         if valid:
-            return 'ok'
+            return 'ok'  # + auth token
         else:
             return 'Invalid login credentials', status.HTTP_406_NOT_ACCEPTABLE
 
@@ -36,6 +37,14 @@ class NeedAuthorizationEndpoint(Resource):
         return {'id': user.id, 'email': user.email}
 
 
+class JWTEndpoint(Resource):
+    decorators = [jwt_required()]
+
+    def get(self):
+        return '%s' % current_identity
+
+
 api.add_resource(RegisterEndpoint, '/register')
 api.add_resource(LoginEndpoint, '/login')
 api.add_resource(NeedAuthorizationEndpoint, '/access/<int:id>')
+api.add_resource(JWTEndpoint, '/protected')
