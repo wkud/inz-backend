@@ -12,4 +12,4 @@ api = Api(app)
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 
-from inz.endpoints import auth_endpoints
+from inz.endpoints import auth_endpoints  # noqa: E402, F401

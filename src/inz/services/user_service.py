@@ -1,8 +1,7 @@
 from inz import db, app
 from inz.models.user import User
-from inz.services.user_auth_service import PasswordUtility
+from inz.utility.password_utility import PasswordUtility
 from flask_jwt import JWT
-from werkzeug.security import safe_str_cmp
 
 
 class UserService:
@@ -24,49 +23,8 @@ class UserService:
         user = User.query.filter_by(email=email).first()
         return user
 
-    @staticmethod
-    def validate_credentials(email, password):
-        user = UserService.get_by_email(email)
-        if user is None:
-            return False
-        correct = PasswordUtility.check_password(user.password, password)
-        return correct
+
+from inz.utility.jwt_utility import JwtUtility  # noqa: E402
 
 
-# TODO try add JWT Utility static class here and redirect jwt ctor to JWTUtility.authenticate and .identify
-
-class User1(object):
-    def __init__(self, id, email, password):
-        self.id = id
-        self.email = email
-        self.password = password
-
-    def __str__(self):
-        return "User(id='%s')" % self.id
-
-users = [
-    User1(1, 'user1', 'abcxyz'),
-    User1(2, 'user2', 'abcxyz'),
-]
-
-email_table = {u.email: u for u in users}
-userid_table = {u.id: u for u in users}
-
-
-def authenticate(email, password):
-    user = email_table.get(email, None)
-    if user and safe_str_cmp(
-            user.password.encode('utf-8'),
-            password.encode('utf-8')):
-        return user
-
-
-def identity(payload):
-    user_id = payload['identity']
-    return userid_table.get(user_id, None)
-
-
-app.config['SECRET_KEY'] = 'super-secret'
-app.config['JWT_AUTH_URL_RULE'] = '/login'
-app.config['JWT_AUTH_USERNAME_KEY'] = 'email'
-jwt = JWT(app, authenticate, identity)
+jwt = JWT(app, JwtUtility.authenticate, JwtUtility.identity)

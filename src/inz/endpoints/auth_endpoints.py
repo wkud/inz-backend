@@ -2,13 +2,12 @@ from flask import request
 from flask_restful import Resource
 from inz import api
 from inz.services.user_service import UserService
-from flask_api import status
 from flask_jwt import jwt_required, current_identity
 
 
 class RegisterEndpoint(Resource):
-    # http://127.0.0.1:5000/register + data in json body
-    # user data is: email and password (not id)
+    # http://127.0.0.1:5000/register + credentials in json body
+    # user credentials = email and password (not id)
     def post(self):
         user_data = request.get_json()
         email = user_data.get('email')
@@ -16,35 +15,18 @@ class RegisterEndpoint(Resource):
         new_user = UserService.create(email, password)
         return {'id': new_user.id}
 
-
-class LoginEndpoint(Resource):
-    # http://127.0.0.1:5000/login
-    def post(self):
-        user_data = request.get_json()
-        email = user_data.get('email')
-        password = user_data.get('password')
-        valid = UserService.validate_credentials(email, password)
-        if valid:
-            return 'ok'  # + auth token
-        else:
-            return 'Invalid login credentials', status.HTTP_406_NOT_ACCEPTABLE
+# http://127.0.0.1:5000/login + credentials in body;
+# this endpoint is provided by flask-jwt module
 
 
-class NeedAuthorizationEndpoint(Resource):
-    # http://127.0.0.1:5000/access/{id}
-    def get(self, id):
-        user = UserService.get_by_id(id)
-        return {'id': user.id, 'email': user.email}
-
-
-class JWTEndpoint(Resource):
+class ProtectedEndpoint(Resource):
+    # http://127.0.0.1:5000/protected
     decorators = [jwt_required()]
 
     def get(self):
-        return '%s' % current_identity
+        user = current_identity
+        return {'id': user.id, 'email': user.email}
 
 
 api.add_resource(RegisterEndpoint, '/register')
-api.add_resource(LoginEndpoint, '/login')
-api.add_resource(NeedAuthorizationEndpoint, '/access/<int:id>')
-api.add_resource(JWTEndpoint, '/protected')
+api.add_resource(ProtectedEndpoint, '/protected')
