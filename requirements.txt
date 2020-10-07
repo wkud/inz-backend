@@ -5,3 +5,6 @@ psycopg2
 flask-bcrypt
 flask-api
 flask-jwt
+pytesseract
+opencv-python
+matplotlib
