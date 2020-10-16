@@ -28,5 +28,12 @@ class ProtectedEndpoint(Resource):
         return {'id': user.id, 'email': user.email}
 
 
+class TestEndpoint(Resource):
+    # http://127.0.0.1:5000/test
+    def get(self):
+        return {'content': 'test complete'}
+
+
 api.add_resource(RegisterEndpoint, '/register')
 api.add_resource(ProtectedEndpoint, '/protected')
+api.add_resource(TestEndpoint, '/test')

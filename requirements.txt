@@ -8,3 +8,4 @@ flask-jwt
 pytesseract
 opencv-python
 matplotlib
+flask-cors
