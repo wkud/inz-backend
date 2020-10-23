@@ -8,11 +8,15 @@ class Expense(db.Model):
     price = db.Column(db.Integer, nullable=False)
     amount = db.Column(db.Integer, nullable=False)
     date = db.Column(db.DateTime, default=datetime.utcnow)  # convert to utc+1
-    fk_user_id = db.Column(
+
+    user_id = db.Column(
         db.Integer, db.ForeignKey('user.id'), nullable=False)
-    # fk_user - backref
-    # fk_category_id
+    # user - backref
+
+    category_id = db.Column(
+        db.Integer, db.ForeignKey('category.id'), nullable=False)
+    # category - backref
 
     def __repr__(self):
-        return f"User({self.id}, '{self.product_name}', \
-        {self.price}, {self.amount}, {self.date}, {self.fk_user_id})"
+        return f"Expense({self.id}, '{self.product_name}', {self.price}, {self.amount}, \
+        {self.date}, user: {self.user_id}, cat: {self.category_id})"
