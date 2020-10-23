@@ -1,5 +1,6 @@
 from inz import db
 from inz.models.expense import Expense  # noqa: F401
+from inz.models.limit import Limit  # noqa: F401
 
 
 class Category(db.Model):
@@ -10,7 +11,8 @@ class Category(db.Model):
         db.Integer, db.ForeignKey('user.id'), nullable=False)
     # user - backref
 
-    expenses = db.relationship('Expense', backref='ref_category', lazy=True)
+    expenses = db.relationship('Expense', backref='category', lazy=True)
+    limits = db.relationship('Limit', backref='category', lazy=True)
 
     def __repr__(self):
         return f"Category({self.id}, '{self.name}', user: {self.user_id})"
