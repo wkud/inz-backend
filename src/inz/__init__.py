@@ -17,3 +17,4 @@ bcrypt = Bcrypt(app)
 from inz.endpoints import auth_endpoints  # noqa: E402, F401
 from inz.endpoints import ocr_endpoints  # noqa: E402, F401
 from inz.endpoints import expense_endpoints  # noqa: E402, F401
+from inz.endpoints import category_endpoints  # noqa: E402, F401

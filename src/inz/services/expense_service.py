@@ -7,7 +7,7 @@ from inz.exceptions.record_not_found_error import RecordNotFoundError
 
 class ExpenseService:
     @staticmethod
-    def create(user_id, product_name, price, amount, date_string, category_id):
+    def create(product_name, price, amount, date_string, user_id, category_id):
         date_obj = date.fromisoformat(date_string)
         new_expense = Expense(product_name=product_name,
                               price=price, amount=amount, date=date_obj,
@@ -18,17 +18,21 @@ class ExpenseService:
 
     @staticmethod
     def update(expense_id, current_user_id, product_name, price, amount,
-               date, category_id):
+               date_string, category_id):
+        # validate access
+        ExpenseService.get_by_id(expense_id, current_user_id)
+
         # user_id field cannot be changed
+        date_obj = date.fromisoformat(date_string)
         new_data = dict(product_name=product_name,
-                        price=price, amount=amount, date=date,
+                        price=price, amount=amount, date=date_obj,
                         category_id=category_id)
         for field in new_data.copy():
             if new_data[field] is None:
                 del new_data[field]
 
-        # validate access
-        ExpenseService.get_by_id(expense_id, current_user_id)
+        if len(new_data) == 0:
+            return
 
         Expense.query.filter_by(id=expense_id).update(new_data)
         db.session.commit()
@@ -36,7 +40,6 @@ class ExpenseService:
     @ staticmethod
     def delete(expense_id, current_user_id):
         expense = ExpenseService.get_by_id(expense_id, current_user_id)
-        print(expense)
         db.session.delete(expense)
         db.session.commit()
 

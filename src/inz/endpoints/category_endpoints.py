@@ -3,38 +3,34 @@ from flask_restful import Resource
 from flask_api import status
 from flask_jwt import jwt_required, current_identity
 from inz import api
-from inz.services.expense_service import ExpenseService
+from inz.services.category_service import CategoryService
 from inz.exceptions.unauthorized_error import UnauthorizedError
 from inz.exceptions.record_not_found_error import RecordNotFoundError
 
 
-class ExpenseEndpoint(Resource):
+class CategoryEndpoint(Resource):
     decorators = [jwt_required()]
-    # http://127.0.0.1:5000/expense
+    # http://127.0.0.1:5000/category
 
     def post(self):
         data = request.get_json()
-        new_expense = ExpenseService.create(data.get('product_name'),
-                                            data.get('price'),
-                                            data.get('amount'),
-                                            data.get('date'),
-                                            current_identity.id,
-                                            data.get('category_id'))
-        return {'id': new_expense.id}
+        new_category = CategoryService.create(data.get('name'),
+                                              current_identity.id)
+        return {'id': new_category.id}
 
     def get(self):
-        all_user_expenses = current_identity.expenses
-        return [expense.to_json() for expense in all_user_expenses]
+        all_user_categories = current_identity.categories
+        return [category.to_json() for category in all_user_categories]
 
 
-class ExpenseIdEndpoint(Resource):
-    # http://127.0.0.1:5000/expense/{id}
+class CategoryIdEndpoint(Resource):
+    # http://127.0.0.1:5000/category/{id}
     decorators = [jwt_required()]
 
     def get(self, id):
         try:
-            expense = ExpenseService.get_by_id(id, current_identity.id)
-            return expense.to_json()
+            category = CategoryService.get_by_id(id, current_identity.id)
+            return category.to_json()
         except RecordNotFoundError as err:
             return err.message, status.HTTP_400_BAD_REQUEST
         except UnauthorizedError as err:
@@ -43,10 +39,7 @@ class ExpenseIdEndpoint(Resource):
     def put(self, id):
         data = request.get_json()  # TODO to test if unathorized error needed
         try:
-            ExpenseService.update(id, current_identity.id,
-                                  data.get('product_name'), data.get('price'),
-                                  data.get('amount'), data.get('date'),
-                                  data.get('category_id'))
+            CategoryService.update(id, current_identity.id, data.get('name'))
             return '', status.HTTP_204_NO_CONTENT
         except RecordNotFoundError as err:
             return err.message, status.HTTP_400_BAD_REQUEST
@@ -55,7 +48,7 @@ class ExpenseIdEndpoint(Resource):
 
     def delete(self, id):
         try:
-            ExpenseService.delete(id, current_identity.id)
+            CategoryService.delete(id, current_identity.id)
             return '', status.HTTP_204_NO_CONTENT
         except RecordNotFoundError as err:
             return err.message, status.HTTP_400_BAD_REQUEST
@@ -63,5 +56,5 @@ class ExpenseIdEndpoint(Resource):
             return err.message, status.HTTP_401_UNAUTHORIZED
 
 
-api.add_resource(ExpenseEndpoint, '/expense')
-api.add_resource(ExpenseIdEndpoint, '/expense/<int:id>')
+api.add_resource(CategoryEndpoint, '/category')
+api.add_resource(CategoryIdEndpoint, '/category/<int:id>')

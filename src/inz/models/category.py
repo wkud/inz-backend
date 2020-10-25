@@ -16,3 +16,6 @@ class Category(db.Model):
 
     def __repr__(self):
         return f"Category({self.id}, '{self.name}', user: {self.user_id})"
+
+    def to_json(self):
+        return {'id': self.id, 'name': self.name, 'user_id': self.user_id}
