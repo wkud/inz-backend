@@ -36,7 +36,7 @@ class ExpenseIdEndpoint(Resource):
             expense = ExpenseService.get_by_id(id, current_identity.id)
             return expense.to_json()
         except RecordNotFoundError as err:
-            return err.message, status.HTTP_400_BAD_REQUEST
+            return err.message, status.HTTP_404_NOT_FOUND
         except UnauthorizedError as err:
             return err.message, status.HTTP_401_UNAUTHORIZED
 
@@ -49,7 +49,7 @@ class ExpenseIdEndpoint(Resource):
                                   data.get('category_id'))
             return '', status.HTTP_204_NO_CONTENT
         except RecordNotFoundError as err:
-            return err.message, status.HTTP_400_BAD_REQUEST
+            return err.message, status.HTTP_404_NOT_FOUND
         except UnauthorizedError as err:
             return err.message, status.HTTP_401_UNAUTHORIZED
 
@@ -58,7 +58,7 @@ class ExpenseIdEndpoint(Resource):
             ExpenseService.delete(id, current_identity.id)
             return '', status.HTTP_204_NO_CONTENT
         except RecordNotFoundError as err:
-            return err.message, status.HTTP_400_BAD_REQUEST
+            return err.message, status.HTTP_404_NOT_FOUND
         except UnauthorizedError as err:
             return err.message, status.HTTP_401_UNAUTHORIZED
 

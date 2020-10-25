@@ -25,8 +25,8 @@ class CategoryService:
         db.session.commit()
 
     @ staticmethod
-    def delete(expense_id, current_user_id):
-        category = CategoryService.get_by_id(expense_id, current_user_id)
+    def delete(category_id, current_user_id):
+        category = CategoryService.get_by_id(category_id, current_user_id)
         db.session.delete(category)
         db.session.commit()
 

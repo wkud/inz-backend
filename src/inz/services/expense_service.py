@@ -23,9 +23,8 @@ class ExpenseService:
         ExpenseService.get_by_id(expense_id, current_user_id)
 
         # user_id field cannot be changed
-        date_obj = date.fromisoformat(date_string)
         new_data = dict(product_name=product_name,
-                        price=price, amount=amount, date=date_obj,
+                        price=price, amount=amount, date=date_string,
                         category_id=category_id)
         for field in new_data.copy():
             if new_data[field] is None:
@@ -33,6 +32,10 @@ class ExpenseService:
 
         if len(new_data) == 0:
             return
+
+        # if date_string != None: convert to date objects
+        if 'date' in new_data:
+            new_data['date'] = date.fromisoformat(date_string)
 
         Expense.query.filter_by(id=expense_id).update(new_data)
         db.session.commit()

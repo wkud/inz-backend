@@ -32,7 +32,7 @@ class CategoryIdEndpoint(Resource):
             category = CategoryService.get_by_id(id, current_identity.id)
             return category.to_json()
         except RecordNotFoundError as err:
-            return err.message, status.HTTP_400_BAD_REQUEST
+            return err.message, status.HTTP_404_NOT_FOUND
         except UnauthorizedError as err:
             return err.message, status.HTTP_401_UNAUTHORIZED
 
@@ -42,7 +42,7 @@ class CategoryIdEndpoint(Resource):
             CategoryService.update(id, current_identity.id, data.get('name'))
             return '', status.HTTP_204_NO_CONTENT
         except RecordNotFoundError as err:
-            return err.message, status.HTTP_400_BAD_REQUEST
+            return err.message, status.HTTP_404_NOT_FOUND
         except UnauthorizedError as err:
             return err.message, status.HTTP_401_UNAUTHORIZED
 
@@ -51,7 +51,7 @@ class CategoryIdEndpoint(Resource):
             CategoryService.delete(id, current_identity.id)
             return '', status.HTTP_204_NO_CONTENT
         except RecordNotFoundError as err:
-            return err.message, status.HTTP_400_BAD_REQUEST
+            return err.message, status.HTTP_404_NOT_FOUND
         except UnauthorizedError as err:
             return err.message, status.HTTP_401_UNAUTHORIZED
 

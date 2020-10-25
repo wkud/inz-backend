@@ -15,3 +15,10 @@ class Limit(db.Model):
     def __repr__(self):
         return f"Limit({self.id}, {self.duration_start}, {self.duration_end}, \
         {self.planned_amount}, cat: {self.category_id})"
+
+    def to_json(self):
+        return {'id': self.id,
+                'duration_start': date.isoformat(self.duration_start),
+                'duration_end': date.isoformat(self.duration_end),
+                'planned_amount': self.planned_amount,
+                'category_id': self.category_id}
