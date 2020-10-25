@@ -1,3 +1,6 @@
+from datetime import timedelta
+
+
 class Config(object):
     DEBUG = False
     TESTING = False
@@ -5,9 +8,13 @@ class Config(object):
     SECRET_KEY = 'secret_key'
     JWT_AUTH_URL_RULE = '/login'
     JWT_AUTH_USERNAME_KEY = 'email'
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=5)
+    ABSOLUTE_PATH_TO_TESSERACT_EXECUTABLE = \
+        r'drive:\...\tesseract.exe'
 
 class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = 'postgres://user:password@hostname:port/database-name'
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=3)
 
 
 class DevelopmentConfig(Config):
