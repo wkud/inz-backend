@@ -4,6 +4,7 @@ from inz.exceptions.unauthorized_error import UnauthorizedError
 from inz.exceptions.record_not_found_error import RecordNotFoundError
 from inz.exceptions.invalid_duration_error import InvalidDurationError
 from inz.utility.list_utility import contains
+from inz.utility.duration_utility import duration_contains
 from datetime import date
 
 
@@ -88,3 +89,15 @@ class LimitService:
         if limit.category.user_id != current_user_id:
             raise UnauthorizedError()
         return limit
+
+    @ staticmethod
+    def get_spent_amount(limit_id, current_user_id):
+        limit = LimitService.get_by_id(limit_id, current_user_id)
+        expenses_from_category = limit.category.expenses
+        expenses_from_duration = [e for e in expenses_from_category
+                                  if duration_contains(
+                                      limit.duration_start,
+                                      limit.duration_end, e.date)]
+        spent_amount = sum([e.price * e.amount
+                            for e in expenses_from_duration])
+        return spent_amount
