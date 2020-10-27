@@ -19,7 +19,8 @@ class ExpenseEndpoint(Resource):
                                             data.get('amount'),
                                             data.get('date'),
                                             current_identity.id,
-                                            data.get('category_id'))
+                                            data.get('category_id'),
+                                            current_identity.categories)
         return {'id': new_expense.id}
 
     def get(self):
@@ -46,7 +47,8 @@ class ExpenseIdEndpoint(Resource):
             ExpenseService.update(id, current_identity.id,
                                   data.get('product_name'), data.get('price'),
                                   data.get('amount'), data.get('date'),
-                                  data.get('category_id'))
+                                  data.get('category_id'),
+                                  current_identity.categories)
             return '', status.HTTP_204_NO_CONTENT
         except RecordNotFoundError as err:
             return err.message, status.HTTP_404_NOT_FOUND

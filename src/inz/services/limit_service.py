@@ -12,10 +12,10 @@ class LimitService:
     @staticmethod
     def create(duration_start_date_string, duration_end_date_string,
                planned_amount, category_id, current_user_categories):
-        # validate access
-        is_accessible = contains(current_user_categories,
-                                 lambda c: c.id == category_id)
-        if not is_accessible:
+        # validate access to category_id
+        category_accessible = contains(current_user_categories,
+                                       lambda c: c.id == category_id)
+        if not category_accessible:
             raise UnauthorizedError(msg='Given category cannot be accessed')
 
         duration_start = date.fromisoformat(duration_start_date_string)

@@ -3,11 +3,19 @@ from inz import db
 from datetime import date
 from inz.exceptions.unauthorized_error import UnauthorizedError
 from inz.exceptions.record_not_found_error import RecordNotFoundError
+from inz.utility.list_utility import contains
 
 
 class ExpenseService:
     @staticmethod
-    def create(product_name, price, amount, date_string, user_id, category_id):
+    def create(product_name, price, amount, date_string, user_id, category_id,
+               current_user_categories):
+        # validate access to category_id
+        category_accessible = contains(current_user_categories,
+                                       lambda c: c.id == category_id)
+        if not category_accessible:
+            raise UnauthorizedError(msg='Given category cannot be accessed')
+
         date_obj = date.fromisoformat(date_string)
         new_expense = Expense(product_name=product_name,
                               price=price, amount=amount, date=date_obj,
@@ -18,9 +26,15 @@ class ExpenseService:
 
     @staticmethod
     def update(expense_id, current_user_id, product_name, price, amount,
-               date_string, category_id):
+               date_string, category_id, current_user_categories):
         # validate access
         ExpenseService.get_by_id(expense_id, current_user_id)
+
+        # validate access to category_id
+        category_accessible = contains(current_user_categories,
+                                       lambda c: c.id == category_id)
+        if not category_accessible:
+            raise UnauthorizedError(msg='Given category cannot be accessed')
 
         # user_id field cannot be changed
         new_data = dict(product_name=product_name,
