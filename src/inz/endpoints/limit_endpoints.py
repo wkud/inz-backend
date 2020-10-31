@@ -29,9 +29,9 @@ class LimitEndpoint(Resource):
             return 'Invalid data', status.HTTP_400_BAD_REQUEST
 
     def get(self):
-        return [limit.to_json()
+        return {'list': [limit.to_json()
                 for category in current_identity.categories
-                for limit in category.limits]
+                for limit in category.limits]}
 
 
 class LimitIdEndpoint(Resource):

@@ -14,7 +14,7 @@ class Expense(db.Model):
     # user - backref
 
     category_id = db.Column(
-        db.Integer, db.ForeignKey('category.id'), nullable=False)
+        db.Integer, db.ForeignKey('category.id'), nullable=True)
     # category - backref
 
     def __repr__(self):

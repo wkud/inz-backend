@@ -11,10 +11,12 @@ class ExpenseService:
     def create(product_name, price, amount, date_string, user_id, category_id,
                current_user_categories):
         # validate access to category_id
-        category_accessible = contains(current_user_categories,
-                                       lambda c: c.id == category_id)
-        if not category_accessible:
-            raise UnauthorizedError(msg='Given category cannot be accessed')
+        if category_id is not None and category_id > 0:
+            category_accessible = contains(current_user_categories,
+                                           lambda c: c.id == category_id)
+            if not category_accessible:
+                raise UnauthorizedError(
+                    msg='Given category cannot be accessed')
 
         date_obj = date.fromisoformat(date_string)
         new_expense = Expense(product_name=product_name,

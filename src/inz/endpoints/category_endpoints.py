@@ -20,7 +20,8 @@ class CategoryEndpoint(Resource):
 
     def get(self):
         all_user_categories = current_identity.categories
-        return [category.to_json() for category in all_user_categories]
+        return {'list': [category.to_json()
+                         for category in all_user_categories]}
 
 
 class CategoryIdEndpoint(Resource):

@@ -25,7 +25,7 @@ class ExpenseEndpoint(Resource):
 
     def get(self):
         all_user_expenses = current_identity.expenses
-        return [expense.to_json() for expense in all_user_expenses]
+        return {'list': [expense.to_json() for expense in all_user_expenses]}
 
 
 class ExpenseIdEndpoint(Resource):

@@ -4,7 +4,6 @@ from inz import api
 from inz.services.user_service import UserService
 from flask_jwt import jwt_required, current_identity
 
-
 class RegisterEndpoint(Resource):
     # http://127.0.0.1:5000/register + credentials in json body
     # user credentials = email and password (not id)
@@ -19,7 +18,7 @@ class RegisterEndpoint(Resource):
 # this endpoint is provided by flask-jwt module
 
 
-class ProtectedEndpoint(Resource):
+class IdentityEndpoint(Resource):
     # http://127.0.0.1:5000/protected
     decorators = [jwt_required()]
 
@@ -35,5 +34,5 @@ class TestEndpoint(Resource):
 
 
 api.add_resource(RegisterEndpoint, '/register')
-api.add_resource(ProtectedEndpoint, '/protected')
+api.add_resource(IdentityEndpoint, '/identity')
 api.add_resource(TestEndpoint, '/test')
