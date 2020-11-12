@@ -22,7 +22,7 @@ class LimitService:
         duration_end = date.fromisoformat(duration_end_date_string)
 
         # validate date constraints
-        if duration_start >= duration_end:
+        if duration_start > duration_end:
             raise InvalidDurationError()
 
         new_limit = Limit(duration_start=duration_start,
