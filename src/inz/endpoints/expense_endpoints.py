@@ -21,7 +21,8 @@ class ExpenseEndpoint(Resource):
                                             current_identity.id,
                                             data.get('category_id'),
                                             current_identity.categories)
-        return {'id': new_expense.id}
+        return {'id': new_expense.id,
+                'category_name': new_expense.category.name}
 
     def get(self):
         all_user_expenses = current_identity.expenses

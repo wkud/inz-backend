@@ -21,4 +21,6 @@ class Limit(db.Model):
                 'duration_start': date.isoformat(self.duration_start),
                 'duration_end': date.isoformat(self.duration_end),
                 'planned_amount': self.planned_amount,
-                'category_id': self.category_id}
+                'category_id': self.category_id,
+                'category_name': self.category.name
+                if self.category is not None else 'no category'}

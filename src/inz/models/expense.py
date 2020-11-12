@@ -25,4 +25,6 @@ class Expense(db.Model):
         return {'id': self.id, 'product_name': self.product_name,
                 'price': self.price, 'amount': self.amount,
                 'date': self.date.isoformat(), 'user_id': self.user_id,
-                'category_id': self.category_id}
+                'category_id': self.category_id,
+                'category_name': self.category.name
+                if self.category is not None else 'no category'}

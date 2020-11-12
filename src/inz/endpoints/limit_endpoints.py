@@ -22,7 +22,8 @@ class LimitEndpoint(Resource):
                                             data.get('planned_amount'),
                                             data.get('category_id'),
                                             current_identity.categories)
-            return {'id': new_limit.id}
+            return {'id': new_limit.id,
+                    'category_name': new_limit.category.name}
         except InvalidDurationError as err:
             return err.message, status.HTTP_406_NOT_ACCEPTABLE
         except ValueError:
@@ -30,8 +31,8 @@ class LimitEndpoint(Resource):
 
     def get(self):
         return {'list': [limit.to_json()
-                for category in current_identity.categories
-                for limit in category.limits]}
+                         for category in current_identity.categories
+                         for limit in category.limits]}
 
 
 class LimitIdEndpoint(Resource):
