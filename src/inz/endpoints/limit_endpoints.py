@@ -30,9 +30,17 @@ class LimitEndpoint(Resource):
             return 'Invalid data', status.HTTP_400_BAD_REQUEST
 
     def get(self):
-        return {'list': [limit.to_json()
-                         for category in current_identity.categories
-                         for limit in category.limits]}
+        limits = [limit
+                  for category in current_identity.categories
+                  for limit in category.limits]
+
+        limits_with_info = []
+        for limit in limits:
+            json = limit.to_json()
+            json['info'] = LimitService.get_info_of(limit)
+            limits_with_info.append(json)
+
+        return {'list': limits_with_info}
 
 
 class LimitIdEndpoint(Resource):
@@ -81,24 +89,14 @@ class LimitInfoEndpoint(Resource):
     decorators = [jwt_required()]
 
     def get(self, id):
-        limit = LimitService.get_by_id(id, current_identity.id)
-
-        duration_length = (limit.duration_end - limit.duration_start).days
-        duration_past = (date.today() - limit.duration_start).days
-        duration_past = min(duration_past, duration_length)
-        duration_past = max(0, duration_past)
-
-        planned_amount = limit.planned_amount
-        spent_amount = LimitService.get_spent_amount(id, current_identity.id)
-
-        saving_rate = 'good'
-        if spent_amount/planned_amount > duration_past/duration_length:
-            saving_rate = 'bad'
-
-        return {'saving_rate': saving_rate, 'spent_amount': spent_amount,
-                'planned_amount': planned_amount,
-                'duration_past': duration_past,
-                'duration_length': duration_length}
+        try:
+            limit = LimitService.get_by_id(id, current_identity.id)
+            info = LimitService.get_info_of(limit)
+            return {'info': info}
+        except RecordNotFoundError as err:
+            return err.message, status.HTTP_404_NOT_FOUND
+        except UnauthorizedError as err:
+            return err.message, status.HTTP_401_UNAUTHORIZED
 
 
 api.add_resource(LimitEndpoint, '/limit')

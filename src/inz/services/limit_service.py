@@ -91,8 +91,7 @@ class LimitService:
         return limit
 
     @ staticmethod
-    def get_spent_amount(limit_id, current_user_id):
-        limit = LimitService.get_by_id(limit_id, current_user_id)
+    def get_spent_amount(limit):
         expenses_from_category = limit.category.expenses
         expenses_from_duration = [e for e in expenses_from_category
                                   if duration_contains(
@@ -101,3 +100,22 @@ class LimitService:
         spent_amount = sum([e.price * e.amount
                             for e in expenses_from_duration])
         return spent_amount
+
+    @staticmethod
+    def get_info_of(limit):
+        duration_length = (limit.duration_end - limit.duration_start).days + 1
+        duration_past = (date.today() - limit.duration_start).days
+        duration_past = min(duration_past, duration_length)
+        duration_past = max(0, duration_past)
+
+        planned_amount = limit.planned_amount
+        spent_amount = LimitService.get_spent_amount(limit)
+
+        saving_rate = 'bad' \
+            if spent_amount/planned_amount > duration_past/duration_length \
+            else 'good'
+
+        return {'saving_rate': saving_rate,
+                'spent_amount': spent_amount,
+                'duration_past': duration_past,
+                'duration_length': duration_length}
