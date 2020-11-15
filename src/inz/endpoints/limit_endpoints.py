@@ -7,7 +7,6 @@ from inz.services.limit_service import LimitService
 from inz.exceptions.unauthorized_error import UnauthorizedError
 from inz.exceptions.record_not_found_error import RecordNotFoundError
 from inz.exceptions.invalid_duration_error import InvalidDurationError
-from datetime import date
 
 
 class LimitEndpoint(Resource):
@@ -40,7 +39,12 @@ class LimitEndpoint(Resource):
             json['info'] = LimitService.get_info_of(limit)
             limits_with_info.append(json)
 
-        return {'list': limits_with_info}
+        return {duration_category: [limit for limit in limits_with_info
+                                    if limit
+                                    .get('info')
+                                    .get('duration_category') ==
+                                    duration_category]
+                for duration_category in ['current', 'upcoming', 'finished']}
 
 
 class LimitIdEndpoint(Resource):

@@ -115,7 +115,11 @@ class LimitService:
             if spent_amount/planned_amount > duration_past/duration_length \
             else 'good'
 
+        duration_category = 'finished' if duration_past == duration_length else \
+            'upcoming' if duration_past == 0 else 'current'
+
         return {'saving_rate': saving_rate,
                 'spent_amount': spent_amount,
                 'duration_past': duration_past,
-                'duration_length': duration_length}
+                'duration_length': duration_length,
+                'duration_category': duration_category}
