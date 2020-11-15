@@ -22,7 +22,8 @@ class LimitEndpoint(Resource):
                                             data.get('category_id'),
                                             current_identity.categories)
             return {'id': new_limit.id,
-                    'category_name': new_limit.category.name}
+                    'category_name': new_limit.category.name,
+                    'info': LimitService.get_info_of(new_limit)}
         except InvalidDurationError as err:
             return err.message, status.HTTP_406_NOT_ACCEPTABLE
         except ValueError:
