@@ -2,6 +2,8 @@ from inz.models.category import Category
 from inz import db
 from inz.exceptions.unauthorized_error import UnauthorizedError
 from inz.exceptions.record_not_found_error import RecordNotFoundError
+from inz.utility.duration_utility import duration_contains
+from datetime import date
 
 
 class CategoryService:
@@ -38,3 +40,38 @@ class CategoryService:
         if category.user_id != current_user_id:
             raise UnauthorizedError()
         return category
+
+    @staticmethod
+    def get_category_analysis(start_date_string, end_date_string,
+                              current_user_categories,
+                              current_user_expenses):
+        start = date.fromisoformat(start_date_string)
+        end = date.fromisoformat(end_date_string)
+
+        total_spending = sum(
+            [expense.price * expense.amount
+             for expense in current_user_expenses
+             if duration_contains(start, end, expense.date)])
+
+        spending_per_category = {
+            category.name: sum(
+                [expense.price * expense.amount
+                 for expense in category.expenses
+                 if duration_contains(start, end, expense.date)])
+            for category in current_user_categories}
+
+        spending_per_category['no category'] = total_spending - sum(
+            [category_spending
+             for category_spending in spending_per_category.values()])
+
+        analysis = {'total_spending': total_spending,
+                    'categories': [
+                        {'category_name': category_name,
+                         'spent_amount': spending_per_category[category_name],
+                         'spent_percent': round(
+                             spending_per_category[category_name] * 100
+                             / total_spending, 2)
+                         }
+                        for category_name in spending_per_category.keys()
+                    ]}
+        return analysis

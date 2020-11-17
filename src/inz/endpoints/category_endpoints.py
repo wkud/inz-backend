@@ -57,5 +57,23 @@ class CategoryIdEndpoint(Resource):
             return err.message, status.HTTP_401_UNAUTHORIZED
 
 
+class CategoryAnalysisEndpoint(Resource):
+    # http://127.0.0.1:5000/category/analysis
+    decorators = [jwt_required()]
+
+    def get(self):
+        data = request.get_json()
+        try:
+            analysis = CategoryService.get_category_analysis(
+                data.get('period_start'),
+                data.get('period_end'),
+                current_identity.categories,
+                current_identity.expenses)
+            return {'analysis': analysis}
+        except ValueError:
+            return 'Invalid date strings', status.HTTP_400_BAD_REQUEST
+
+
 api.add_resource(CategoryEndpoint, '/category')
 api.add_resource(CategoryIdEndpoint, '/category/<int:id>')
+api.add_resource(CategoryAnalysisEndpoint, '/category/analysis')
