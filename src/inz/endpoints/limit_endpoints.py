@@ -28,6 +28,8 @@ class LimitEndpoint(Resource):
             return err.message, status.HTTP_406_NOT_ACCEPTABLE
         except ValueError:
             return 'Invalid data', status.HTTP_400_BAD_REQUEST
+        except AttributeError:
+            return 'Invalid request body', status.HTTP_400_BAD_REQUEST
 
     def get(self):
         limits = [limit
@@ -78,6 +80,8 @@ class LimitIdEndpoint(Resource):
             return err.message, status.HTTP_406_NOT_ACCEPTABLE
         except ValueError:
             return 'Invalid data', status.HTTP_400_BAD_REQUEST
+        except AttributeError:
+            return 'Invalid request body', status.HTTP_400_BAD_REQUEST
 
     def delete(self, id):
         try:

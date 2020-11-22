@@ -1,18 +1,23 @@
 from flask import request
 from flask_restful import Resource
+from flask_api import status
 from inz import api
 from inz.services.user_service import UserService
 from flask_jwt import jwt_required, current_identity
+
 
 class RegisterEndpoint(Resource):
     # http://127.0.0.1:5000/register + credentials in json body
     # user credentials = email and password (not id)
     def post(self):
-        user_data = request.get_json()
-        email = user_data.get('email')
-        password = user_data.get('password')
-        new_user = UserService.create(email, password)
-        return {'id': new_user.id}
+        try:
+            user_data = request.get_json()
+            email = user_data.get('email')
+            password = user_data.get('password')
+            new_user = UserService.create(email, password)
+            return {'id': new_user.id}
+        except AttributeError:
+            return 'Invalid request body', status.HTTP_400_BAD_REQUEST
 
 # http://127.0.0.1:5000/login + credentials in body;
 # this endpoint is provided by flask-jwt module

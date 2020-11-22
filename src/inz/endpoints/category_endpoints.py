@@ -13,10 +13,13 @@ class CategoryEndpoint(Resource):
     # http://127.0.0.1:5000/category
 
     def post(self):
-        data = request.get_json()
-        new_category = CategoryService.create(data.get('name'),
-                                              current_identity.id)
-        return {'id': new_category.id}
+        try:
+            data = request.get_json()
+            new_category = CategoryService.create(data.get('name'),
+                                                  current_identity.id)
+            return {'id': new_category.id}
+        except AttributeError:
+            return 'Invalid request body', status.HTTP_400_BAD_REQUEST
 
     def get(self):
         all_user_categories = current_identity.categories
@@ -46,6 +49,8 @@ class CategoryIdEndpoint(Resource):
             return err.message, status.HTTP_404_NOT_FOUND
         except UnauthorizedError as err:
             return err.message, status.HTTP_401_UNAUTHORIZED
+        except AttributeError:
+            return 'Invalid request body', status.HTTP_400_BAD_REQUEST
 
     def delete(self, id):
         try:
@@ -72,6 +77,8 @@ class CategoryAnalysisEndpoint(Resource):
             return {'analysis': analysis}
         except ValueError:
             return 'Invalid date strings', status.HTTP_400_BAD_REQUEST
+        except AttributeError:
+            return 'Invalid request body', status.HTTP_400_BAD_REQUEST
 
 
 api.add_resource(CategoryEndpoint, '/category')
