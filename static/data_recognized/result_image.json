@@ -1,0 +1,32 @@
+{
+  "date": "2020-11-30",
+  "total_price": 103.28,
+  "expenses": [
+    {"name": "A_ WORKI.NA SMIECI", "price": 3.99},
+    {"name": "C_PIEROGI.ZE SZPIN", "price": 4.79},
+    {"name": "V_PIEROGI Z.SEREM.", "price": 4.79},
+    {"name": "L_PIEROGI DROBIOWE", "price": 5.99},
+    {"name": "B-MIX SAL.Z LODOW.", "price": 3.99},
+    {"name": "U_D SMIETANA 18% 18", "price": 1.34},
+    {"name": "C_SZARLOTKA ZWYKLAS", "price": 9.90},
+    {"name": "C_PLAT OWS .ZWYK .", "price": 1.69},
+    {"name": "4_//SCIERKA.DOMOWA", "price": 0.98},
+    {"name": "U_CIECIORKA NA PARZ", "price": 4.59},
+    {"name": "C_MLEKO POLSKIE PET", "price": 2.64},
+    {"name": "C_CIECIORKA NA PARZ", "price": 4.59},
+    {"name": "C_ TRUSKAWKI", "price": 5.45},
+    {"name": "C_ TRUSKAWKI", "price": 5.45},
+    {"name": "U_CHLEB.RAZOWY .", "price": 4.79},
+    {"name": "© _CHLEB.RAZOWY .", "price": 4.79},
+    {"name": "C_PASZTETOWA DROBIO", "price": 3.09},
+    {"name": "C_PAROWKI.Z INDY.", "price": 3.38},
+    {"name": "c_PAROWKI.Z INDY.", "price": 3.38},
+    {"name": "C_BOROWKA AMERYK.", "price": 10.99},
+    {"name": "C_D BANANY LUZ", "price": 3.91},
+    {"name": "°_D CEBULA LUZ", "price": 1.76},
+    {"name": "CD MARCHEW LUZ Q,", "price": 0.98},
+    {"name": "C POMIDOR. LUZ", "price": 4.21},
+    {"name": "C JABL TYP B LUZ.", "price": 1.82}
+  ]
+}
+

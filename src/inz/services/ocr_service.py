@@ -21,7 +21,7 @@ class OcrUtility:
 
 
 def run_as_main():
-    filename = 'receipt photo.jpg'
+    filename = 'thre2.png'
 
     text = OcrUtility.recognize(filename, True)
     print(text)

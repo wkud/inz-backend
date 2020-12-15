@@ -64,6 +64,11 @@ class CategoryService:
             [category_spending
              for category_spending in spending_per_category.values()])
 
+        if(total_spending == 0):
+            return {'total_spending': 0, 'categories': [{'category_name': category_name, 
+                    'spent_amount': 0, 'spent_percent': 0}
+                      for category_name in spending_per_category.keys()]}
+
         analysis = {'total_spending': total_spending,
                     'categories': [
                         {'category_name': category_name,
